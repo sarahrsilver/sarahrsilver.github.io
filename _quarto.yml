@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Sarah Silver"
+  title: "Sarah Silver test"
   favicon: images/personal_logo.png
   navbar:
     left:
