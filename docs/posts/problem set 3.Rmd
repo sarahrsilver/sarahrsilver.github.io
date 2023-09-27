@@ -1,0 +1,212 @@
+---
+title: "problem set 3"
+output: html_document
+date: "2023-09-22"
+---
+
+```{r libraries, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(GGally)
+library(caret)
+library(rpart.plot)
+library(corrplot)
+library(reshape)
+library(dummy)
+library(kableExtra)
+library(iml)
+library(forecast)
+```
+
+```{r read in, echo=FALSE}
+cars <- read.csv("C:/Users/User/Documents/School/Fall 2023 QMBE3740/R/ToyotaCorolla.csv")
+
+```
+
+```{r prep}
+#check if cols have more than one unique value
+cars_check <- cars %>%
+select_if(function(col) length(unique(col))==1)
+colnames(cars_check)
+
+#remove unnecessary cols
+cars <- cars %>%
+  select(-c(Id, Model, Mfg_Month, Mfg_Year, Cylinders))
+
+#change cat variables to factor dt
+cars_fct = cars %>%
+  select(-Price, -Age_08_04, -KM, -HP, -CC, -Quarterly_Tax, -Weight) %>%
+  mutate_all(.funs = factor)
+
+cars_num = cars %>%
+  select(Price, Age_08_04, KM, HP, CC, Quarterly_Tax, Weight)
+
+cars2 <- bind_cols(cars_num, cars_fct)
+
+```
+
+We remove columns `id` and `model` because these are identifying factors that have no predictive power (model may have some predictive power, but since they're all Corollas and other information is stored in other columns, we drop it). We remove `Mfg_Month` and `Mfg_Year` because we have other columns that tell us how old the car is in `Age_08_04`. We remove `Cylinders` because all Corollas have 4 cylinders. We also change all categorical variables to factor datatype.
+
+#### Explore the data and determine the number of variables and the quantity of any missing values. If values are missing, prescribe a plan to deal with the problem.
+
+```{r eda}
+glimpse(cars2)
+
+cars2 %>% summarise(across(everything(), ~ sum(is.na(.))))
+
+```
+
+We have 35 columns with 1436 rows. There are no missing values so imputation is not necessary.
+
+#### Analyze whether the Price variable is appropriate for a linear regression model and discuss its distribution. Are there any transformations that we might apply to the price variable?
+
+```{r message=FALSE, warning=FALSE}
+
+den <- density(cars2$Price)
+ 
+plot(den, frame = FALSE, col = "red",main = "Density of Price")
+```
+
+The `Price` variable is heavily skewed right, so we want to do a log transformation.
+
+```{r}
+cars2$logprice <- log(cars2$Price)
+
+denlog <- density(cars2$logprice)
+
+plot(denlog, col = "blue", main = "Density of Log Price")
+
+```
+
+#### Is there a relationship between any of the features in the data and the Price feature? Perform some exploratory analysis to determine some features that are related using a feature plot.
+
+```{r}
+featurePlot(x = cars2[, c("KM", "HP", "Age_08_04", "Weight", "CC", "Quarterly_Tax")], 
+            y=cars2$Price, 
+            plot  = "scatter", 
+            type = c("p", "smooth"))
+```
+
+```{r}
+corrplot(cor(cars_num))
+```
+
+The variable with the strongest linear relationship to `Price` is `Age_08_04`. This makes sense, as it's one of the major factors people consider when buying a car. `KM` also has a strong negative linear relationship with `Price` for the same reason. These factors also have a somewhat significant positive correlation with each other -- the older a car is, the more mileage has likely been put on it.
+
+#### Are there any predictor variables in the data that are potentially too strongly related to each other? Make sure to use reference any visualizations, tables, or numbers to show this.
+
+```{r message=FALSE, warning=FALSE}
+x <-model.matrix(~., data=cars2) %>% 
+  cor(use="pairwise.complete.obs")
+
+x[x == 1] <- NA #drop perfect
+x[abs(x) < 0.7] <- NA # drop less than abs(0.7)
+x <- na.omit(melt(x)) # melt
+x <- x[order(-abs(x$value)),] # sort
+kable(x) %>%
+  kable_styling()
+```
+
+To check for correlations across both numeric and factor variables, I used the model.matrix function with cor to create a correlation matrix that automatically one-hot encodes factor variables. I then created a dataframe that shows the correlations over my chosen significance threshold of 0.7. It returned 22 rows, but each correlation is doubled (a:b and b:a) so there are 11 highly correlated variables. Several of these are dummies of the same factor, including `Gears5`:`Gears6` and `Fuel_TypePetrol`:`Fuel_TypeDiesel`. For a simple linear regression, you would want to address these issues via principal component analysis, but you could also use a model that incorporates feature selection like Lasso regression or a regression tree to fix this problem. `Radio_cassette1`:`Radio1` is likely a measure of the same thing (i.e. all Corolla radios might have a cassette player). For this exercise I will remove `Radio_cassette1`.
+
+#### Partition your data into a training set with 70% of the observations and a testing set with the remaining 30%.
+
+```{r}
+
+car_dum = dummy(cars2, int = TRUE)
+car_num = cars2 %>%
+  keep(is.numeric)
+cars_model <- bind_cols(car_num, car_dum)
+rm(car_dum, car_num)
+
+zeros <- colnames(cars_model)[endsWith(colnames(cars_model), "0")]
+
+cars_model <- cars_model %>%
+  select(-c(logprice, Radio_cassette_1)) %>%
+  select(-all_of(zeros))
+
+set.seed(1111)
+samp = createDataPartition(cars_model$Price, p = 0.70, list = FALSE)
+training = cars_model[samp, ]
+testing = cars_model[-samp, ]
+rm(samp)
+```
+
+Since we're making a regression tree, the preparations we made for linear regression were not necessary. I did not remove any correlated variables and I removed the `logprice` variable and will just be using the original `Price` variable as the response. I only removed the dummies of the binary variables -- others shouldn't matter as the model performs its own feature selection.
+
+#### Based on your results and relationships in questions (4) and (5), build a regression tree model to predict car prices. Make sure to conduct cross validation to evaluate the model and choose the best cost complexity parameter for this problem (use default values for minsplit, minbucket, maxdepth, etc. But choose grid of cp values to tune over). Use rpart.plot to view your tree and discuss its complexity, usefulness, etc. What role is pre-pruning and post-pruning playing here?
+
+```{r}
+train_ctrl = trainControl(method = "repeatedcv", number = 20, repeats = 10)
+tree = train(Price~.,
+             data = training,
+             method = "rpart",
+             trControl = train_ctrl,
+             tuneGrid = expand.grid(cp = seq(0.0, 0.1, 0.01)),
+             control = rpart.control(method = "anova", minsplit = 1, minbucket = 1)
+             )
+tree
+```
+
+```{r}
+plot(tree)
+```
+
+RMSE is minimized when hyperparameter cp = 0.01. Choosing hyperparameters is a part of pre-pruning.
+
+```{r}
+rparttree <- rpart(Price~., data = training, method = "anova", control = (cp = 0.01))
+rpart.plot(rparttree)
+```
+
+#### Look at the feature importance (using permuted feature importance in "iml" package, with loss = "rmse" and compare = "ratio") and determine which features have the biggest effect, and which might be okay to remove.
+
+```{r}
+tree_predictor = iml::Predictor$new(tree, data = training)
+tree_imp = iml::FeatureImp$new(tree_predictor, loss = "rmse", compare = "ratio", n.repetitions = 30)
+plot(tree_imp)
+```
+
+```{r}
+tree_imp$results
+```
+
+The only important variables are `Age_08_04` and `Weight`. Theoretically, we could remove all of the other variables.
+
+#### Parsimony is about obtaining the simplest model possible, without oversimplifying. Remove a few of the less useful features and retrain / cross validate / tune your tree.
+
+```{r}
+prunetree <- prune.rpart(tree, cp = .01)
+prunetree
+```
+
+The pruning function did not remove any features. We already have the simplest model possible.
+
+#### Use the model resulting from question 9 and test predictions on the testing data. Compare the cross validation error and and testing data. Spend some time interpreting what this prediction error means for your pricing model and its use for CorollaCrowd.
+
+```{r}
+training$pred <- predict(prunetree, training)
+training$resid <- (training$pred - training$Price)
+accuracy(training$pred, training$Price)
+
+testing$pred <- predict(prunetree, testing)
+testing$resid <- (testing$pred - testing$Price)
+accuracy(testing$pred, testing$Price)
+
+```
+
+The RMSE on the test set is higher than the RMSE on the training set, but not by much.
+
+```{r}
+plot(training$pred, training$resid)
+plot(testing$pred, testing$resid)
+```
+
+Residuals are centered fairly well around 0 for the training data. In the testing data, there are some outliers in the most expensive Corollas, as the model never predicts a value of over \$22714.17.
+
+```{r}
+max(training$Price)
+max(testing$Price)
+```
+
+The maximum `Price` in the training set is \$24990 while the maximum `Price` in the testing set is \$32500, so it makes sense why the model failed to capture these higher value cars. The model is most accurate for lower priced Corollas, as the distribution is skewed right.
