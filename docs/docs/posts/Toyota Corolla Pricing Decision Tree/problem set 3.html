@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-09-22">
+
+<title>Sarah Silver test - problem set 3</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<link href="../../../images/personal_logo.png" rel="icon" type="image/png">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script src="../../../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../../../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="../../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Sarah Silver test</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../posts.html" rel="" target="">
+ <span class="menu-text">Posts</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../projects.html" rel="" target="">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../resume.html" rel="" target="">
+ <span class="menu-text">Resume</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com" rel="" target=""><i class="bi bi-linkedin" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">problem set 3</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 22, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#check if cols have more than one unique value</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cars_check <span class="ot">&lt;-</span> cars <span class="sc">%&gt;%</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">select_if</span>(<span class="cf">function</span>(col) <span class="fu">length</span>(<span class="fu">unique</span>(col))<span class="sc">==</span><span class="dv">1</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(cars_check)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Cylinders"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#remove unnecessary cols</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>cars <span class="ot">&lt;-</span> cars <span class="sc">%&gt;%</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(Id, Model, Mfg_Month, Mfg_Year, Cylinders))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#change cat variables to factor dt</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>cars_fct <span class="ot">=</span> cars <span class="sc">%&gt;%</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Price, <span class="sc">-</span>Age_08_04, <span class="sc">-</span>KM, <span class="sc">-</span>HP, <span class="sc">-</span>CC, <span class="sc">-</span>Quarterly_Tax, <span class="sc">-</span>Weight) <span class="sc">%&gt;%</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate_all</span>(<span class="at">.funs =</span> factor)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>cars_num <span class="ot">=</span> cars <span class="sc">%&gt;%</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Price, Age_08_04, KM, HP, CC, Quarterly_Tax, Weight)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>cars2 <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(cars_num, cars_fct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We remove columns <code>id</code> and <code>model</code> because these are identifying factors that have no predictive power (model may have some predictive power, but since they’re all Corollas and other information is stored in other columns, we drop it). We remove <code>Mfg_Month</code> and <code>Mfg_Year</code> because we have other columns that tell us how old the car is in <code>Age_08_04</code>. We remove <code>Cylinders</code> because all Corollas have 4 cylinders. We also change all categorical variables to factor datatype.</p>
+<section id="explore-the-data-and-determine-the-number-of-variables-and-the-quantity-of-any-missing-values.-if-values-are-missing-prescribe-a-plan-to-deal-with-the-problem." class="level4">
+<h4 class="anchored" data-anchor-id="explore-the-data-and-determine-the-number-of-variables-and-the-quantity-of-any-missing-values.-if-values-are-missing-prescribe-a-plan-to-deal-with-the-problem.">Explore the data and determine the number of variables and the quantity of any missing values. If values are missing, prescribe a plan to deal with the problem.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(cars2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1,436
+Columns: 34
+$ Price             &lt;int&gt; 13500, 13750, 13950, 14950, 13750, 12950, 16900, 186…
+$ Age_08_04         &lt;int&gt; 23, 23, 24, 26, 30, 32, 27, 30, 27, 23, 25, 22, 25, …
+$ KM                &lt;int&gt; 46986, 72937, 41711, 48000, 38500, 61000, 94612, 758…
+$ HP                &lt;int&gt; 90, 90, 90, 90, 90, 90, 90, 90, 192, 69, 192, 192, 1…
+$ CC                &lt;int&gt; 2000, 2000, 2000, 2000, 2000, 2000, 2000, 2000, 1800…
+$ Quarterly_Tax     &lt;int&gt; 210, 210, 210, 210, 210, 210, 210, 210, 100, 185, 10…
+$ Weight            &lt;int&gt; 1165, 1165, 1165, 1165, 1170, 1170, 1245, 1245, 1185…
+$ Fuel_Type         &lt;fct&gt; Diesel, Diesel, Diesel, Diesel, Diesel, Diesel, Dies…
+$ Met_Color         &lt;fct&gt; 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1…
+$ Color             &lt;fct&gt; Blue, Silver, Blue, Black, Black, White, Grey, Grey,…
+$ Automatic         &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ Doors             &lt;fct&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3…
+$ Gears             &lt;fct&gt; 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 5, 5…
+$ Mfr_Guarantee     &lt;fct&gt; 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0…
+$ BOVAG_Guarantee   &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0…
+$ Guarantee_Period  &lt;fct&gt; 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 12, 3, 3, 3, 3, 3, 3, …
+$ ABS               &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ Airbag_1          &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ Airbag_2          &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0…
+$ Airco             &lt;fct&gt; 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ Automatic_airco   &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0…
+$ Boardcomputer     &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0…
+$ CD_Player         &lt;fct&gt; 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0…
+$ Central_Lock      &lt;fct&gt; 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1…
+$ Powered_Windows   &lt;fct&gt; 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1…
+$ Power_Steering    &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
+$ Radio             &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1…
+$ Mistlamps         &lt;fct&gt; 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0…
+$ Sport_Model       &lt;fct&gt; 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0…
+$ Backseat_Divider  &lt;fct&gt; 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0…
+$ Metallic_Rim      &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0…
+$ Radio_cassette    &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1…
+$ Parking_Assistant &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+$ Tow_Bar           &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1…</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cars2 <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(.))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Price Age_08_04 KM HP CC Quarterly_Tax Weight Fuel_Type Met_Color Color
+1     0         0  0  0  0             0      0         0         0     0
+  Automatic Doors Gears Mfr_Guarantee BOVAG_Guarantee Guarantee_Period ABS
+1         0     0     0             0               0                0   0
+  Airbag_1 Airbag_2 Airco Automatic_airco Boardcomputer CD_Player Central_Lock
+1        0        0     0               0             0         0            0
+  Powered_Windows Power_Steering Radio Mistlamps Sport_Model Backseat_Divider
+1               0              0     0         0           0                0
+  Metallic_Rim Radio_cassette Parking_Assistant Tow_Bar
+1            0              0                 0       0</code></pre>
+</div>
+</div>
+<p>We have 35 columns with 1436 rows. There are no missing values so imputation is not necessary.</p>
+</section>
+<section id="analyze-whether-the-price-variable-is-appropriate-for-a-linear-regression-model-and-discuss-its-distribution.-are-there-any-transformations-that-we-might-apply-to-the-price-variable" class="level4">
+<h4 class="anchored" data-anchor-id="analyze-whether-the-price-variable-is-appropriate-for-a-linear-regression-model-and-discuss-its-distribution.-are-there-any-transformations-that-we-might-apply-to-the-price-variable">Analyze whether the Price variable is appropriate for a linear regression model and discuss its distribution. Are there any transformations that we might apply to the price variable?</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>den <span class="ot">&lt;-</span> <span class="fu">density</span>(cars2<span class="sc">$</span>Price)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(den, <span class="at">frame =</span> <span class="cn">FALSE</span>, <span class="at">col =</span> <span class="st">"red"</span>,<span class="at">main =</span> <span class="st">"Density of Price"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="problem-set-3_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The <code>Price</code> variable is heavily skewed right, so we want to do a log transformation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cars2<span class="sc">$</span>logprice <span class="ot">&lt;-</span> <span class="fu">log</span>(cars2<span class="sc">$</span>Price)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>denlog <span class="ot">&lt;-</span> <span class="fu">density</span>(cars2<span class="sc">$</span>logprice)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(denlog, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">main =</span> <span class="st">"Density of Log Price"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="problem-set-3_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="is-there-a-relationship-between-any-of-the-features-in-the-data-and-the-price-feature-perform-some-exploratory-analysis-to-determine-some-features-that-are-related-using-a-feature-plot." class="level4">
+<h4 class="anchored" data-anchor-id="is-there-a-relationship-between-any-of-the-features-in-the-data-and-the-price-feature-perform-some-exploratory-analysis-to-determine-some-features-that-are-related-using-a-feature-plot.">Is there a relationship between any of the features in the data and the Price feature? Perform some exploratory analysis to determine some features that are related using a feature plot.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">featurePlot</span>(<span class="at">x =</span> cars2[, <span class="fu">c</span>(<span class="st">"KM"</span>, <span class="st">"HP"</span>, <span class="st">"Age_08_04"</span>, <span class="st">"Weight"</span>, <span class="st">"CC"</span>, <span class="st">"Quarterly_Tax"</span>)], </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">y=</span>cars2<span class="sc">$</span>Price, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">plot  =</span> <span class="st">"scatter"</span>, </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">type =</span> <span class="fu">c</span>(<span class="st">"p"</span>, <span class="st">"smooth"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="problem-set-3_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(<span class="fu">cor</span>(cars_num))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="problem-set-3_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The variable with the strongest linear relationship to <code>Price</code> is <code>Age_08_04</code>. This makes sense, as it’s one of the major factors people consider when buying a car. <code>KM</code> also has a strong negative linear relationship with <code>Price</code> for the same reason. These factors also have a somewhat significant positive correlation with each other – the older a car is, the more mileage has likely been put on it.</p>
+</section>
+<section id="are-there-any-predictor-variables-in-the-data-that-are-potentially-too-strongly-related-to-each-other-make-sure-to-use-reference-any-visualizations-tables-or-numbers-to-show-this." class="level4">
+<h4 class="anchored" data-anchor-id="are-there-any-predictor-variables-in-the-data-that-are-potentially-too-strongly-related-to-each-other-make-sure-to-use-reference-any-visualizations-tables-or-numbers-to-show-this.">Are there any predictor variables in the data that are potentially too strongly related to each other? Make sure to use reference any visualizations, tables, or numbers to show this.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span><span class="fu">model.matrix</span>(<span class="sc">~</span>., <span class="at">data=</span>cars2) <span class="sc">%&gt;%</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>(<span class="at">use=</span><span class="st">"pairwise.complete.obs"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>x[x <span class="sc">==</span> <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co">#drop perfect</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>x[<span class="fu">abs</span>(x) <span class="sc">&lt;</span> <span class="fl">0.7</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co"># drop less than abs(0.7)</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(<span class="fu">melt</span>(x)) <span class="co"># melt</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> x[<span class="fu">order</span>(<span class="sc">-</span><span class="fu">abs</span>(x<span class="sc">$</span>value)),] <span class="co"># sort</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(x) <span class="sc">%&gt;%</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable_styling</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">X1</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">X2</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2685</td>
+<td style="text-align: left;">Radio_cassette1</td>
+<td style="text-align: left;">Radio1</td>
+<td style="text-align: right;">0.9916210</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2960</td>
+<td style="text-align: left;">Radio1</td>
+<td style="text-align: left;">Radio_cassette1</td>
+<td style="text-align: right;">0.9916210</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">112</td>
+<td style="text-align: left;">logprice</td>
+<td style="text-align: left;">Price</td>
+<td style="text-align: right;">0.9774223</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3082</td>
+<td style="text-align: left;">Price</td>
+<td style="text-align: left;">logprice</td>
+<td style="text-align: right;">0.9774223</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1427</td>
+<td style="text-align: left;">Gears6</td>
+<td style="text-align: left;">Gears5</td>
+<td style="text-align: right;">-0.9657999</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1482</td>
+<td style="text-align: left;">Gears5</td>
+<td style="text-align: left;">Gears6</td>
+<td style="text-align: right;">-0.9657999</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">458</td>
+<td style="text-align: left;">Fuel_TypePetrol</td>
+<td style="text-align: left;">Fuel_TypeDiesel</td>
+<td style="text-align: right;">-0.9429759</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">513</td>
+<td style="text-align: left;">Fuel_TypeDiesel</td>
+<td style="text-align: left;">Fuel_TypePetrol</td>
+<td style="text-align: right;">-0.9429759</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">168</td>
+<td style="text-align: left;">logprice</td>
+<td style="text-align: left;">Age_08_04</td>
+<td style="text-align: right;">-0.8767022</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3083</td>
+<td style="text-align: left;">Age_08_04</td>
+<td style="text-align: left;">logprice</td>
+<td style="text-align: right;">-0.8767022</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">59</td>
+<td style="text-align: left;">Age_08_04</td>
+<td style="text-align: left;">Price</td>
+<td style="text-align: right;">-0.8765905</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">114</td>
+<td style="text-align: left;">Price</td>
+<td style="text-align: left;">Age_08_04</td>
+<td style="text-align: right;">-0.8765905</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2510</td>
+<td style="text-align: left;">Powered_Windows1</td>
+<td style="text-align: left;">Central_Lock1</td>
+<td style="text-align: right;">0.8755525</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2565</td>
+<td style="text-align: left;">Central_Lock1</td>
+<td style="text-align: left;">Powered_Windows1</td>
+<td style="text-align: right;">0.8755525</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">346</td>
+<td style="text-align: left;">Fuel_TypePetrol</td>
+<td style="text-align: left;">Quarterly_Tax</td>
+<td style="text-align: right;">-0.8354517</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">511</td>
+<td style="text-align: left;">Quarterly_Tax</td>
+<td style="text-align: left;">Fuel_TypePetrol</td>
+<td style="text-align: right;">-0.8354517</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">1200</td>
+<td style="text-align: left;">Doors5</td>
+<td style="text-align: left;">Doors3</td>
+<td style="text-align: right;">-0.8221205</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1310</td>
+<td style="text-align: left;">Doors3</td>
+<td style="text-align: left;">Doors5</td>
+<td style="text-align: right;">-0.8221205</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">345</td>
+<td style="text-align: left;">Fuel_TypeDiesel</td>
+<td style="text-align: left;">Quarterly_Tax</td>
+<td style="text-align: right;">0.7927262</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">455</td>
+<td style="text-align: left;">Quarterly_Tax</td>
+<td style="text-align: left;">Fuel_TypeDiesel</td>
+<td style="text-align: right;">0.7927262</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">155</td>
+<td style="text-align: left;">Boardcomputer1</td>
+<td style="text-align: left;">Age_08_04</td>
+<td style="text-align: right;">-0.7194487</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2355</td>
+<td style="text-align: left;">Age_08_04</td>
+<td style="text-align: left;">Boardcomputer1</td>
+<td style="text-align: right;">-0.7194487</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>To check for correlations across both numeric and factor variables, I used the model.matrix function with cor to create a correlation matrix that automatically one-hot encodes factor variables. I then created a dataframe that shows the correlations over my chosen significance threshold of 0.7. It returned 22 rows, but each correlation is doubled (a:b and b:a) so there are 11 highly correlated variables. Several of these are dummies of the same factor, including <code>Gears5</code>:<code>Gears6</code> and <code>Fuel_TypePetrol</code>:<code>Fuel_TypeDiesel</code>. For a simple linear regression, you would want to address these issues via principal component analysis, but you could also use a model that incorporates feature selection like Lasso regression or a regression tree to fix this problem. <code>Radio_cassette1</code>:<code>Radio1</code> is likely a measure of the same thing (i.e.&nbsp;all Corolla radios might have a cassette player). For this exercise I will remove <code>Radio_cassette1</code>.</p>
+</section>
+<section id="partition-your-data-into-a-training-set-with-70-of-the-observations-and-a-testing-set-with-the-remaining-30." class="level4">
+<h4 class="anchored" data-anchor-id="partition-your-data-into-a-training-set-with-70-of-the-observations-and-a-testing-set-with-the-remaining-30.">Partition your data into a training set with 70% of the observations and a testing set with the remaining 30%.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>car_dum <span class="ot">=</span> <span class="fu">dummy</span>(cars2, <span class="at">int =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>car_num <span class="ot">=</span> cars2 <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">keep</span>(is.numeric)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>cars_model <span class="ot">&lt;-</span> <span class="fu">bind_cols</span>(car_num, car_dum)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(car_dum, car_num)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>zeros <span class="ot">&lt;-</span> <span class="fu">colnames</span>(cars_model)[<span class="fu">endsWith</span>(<span class="fu">colnames</span>(cars_model), <span class="st">"0"</span>)]</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>cars_model <span class="ot">&lt;-</span> cars_model <span class="sc">%&gt;%</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(logprice, Radio_cassette_1)) <span class="sc">%&gt;%</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">all_of</span>(zeros))</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1111</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>samp <span class="ot">=</span> <span class="fu">createDataPartition</span>(cars_model<span class="sc">$</span>Price, <span class="at">p =</span> <span class="fl">0.70</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>training <span class="ot">=</span> cars_model[samp, ]</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>testing <span class="ot">=</span> cars_model[<span class="sc">-</span>samp, ]</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(samp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Since we’re making a regression tree, the preparations we made for linear regression were not necessary. I did not remove any correlated variables and I removed the <code>logprice</code> variable and will just be using the original <code>Price</code> variable as the response. I only removed the dummies of the binary variables – others shouldn’t matter as the model performs its own feature selection.</p>
+</section>
+<section id="based-on-your-results-and-relationships-in-questions-4-and-5-build-a-regression-tree-model-to-predict-car-prices.-make-sure-to-conduct-cross-validation-to-evaluate-the-model-and-choose-the-best-cost-complexity-parameter-for-this-problem-use-default-values-for-minsplit-minbucket-maxdepth-etc.-but-choose-grid-of-cp-values-to-tune-over.-use-rpart.plot-to-view-your-tree-and-discuss-its-complexity-usefulness-etc.-what-role-is-pre-pruning-and-post-pruning-playing-here" class="level4">
+<h4 class="anchored" data-anchor-id="based-on-your-results-and-relationships-in-questions-4-and-5-build-a-regression-tree-model-to-predict-car-prices.-make-sure-to-conduct-cross-validation-to-evaluate-the-model-and-choose-the-best-cost-complexity-parameter-for-this-problem-use-default-values-for-minsplit-minbucket-maxdepth-etc.-but-choose-grid-of-cp-values-to-tune-over.-use-rpart.plot-to-view-your-tree-and-discuss-its-complexity-usefulness-etc.-what-role-is-pre-pruning-and-post-pruning-playing-here">Based on your results and relationships in questions (4) and (5), build a regression tree model to predict car prices. Make sure to conduct cross validation to evaluate the model and choose the best cost complexity parameter for this problem (use default values for minsplit, minbucket, maxdepth, etc. But choose grid of cp values to tune over). Use rpart.plot to view your tree and discuss its complexity, usefulness, etc. What role is pre-pruning and post-pruning playing here?</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>train_ctrl <span class="ot">=</span> <span class="fu">trainControl</span>(<span class="at">method =</span> <span class="st">"repeatedcv"</span>, <span class="at">number =</span> <span class="dv">20</span>, <span class="at">repeats =</span> <span class="dv">10</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">=</span> <span class="fu">train</span>(Price<span class="sc">~</span>.,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">data =</span> training,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">method =</span> <span class="st">"rpart"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">trControl =</span> train_ctrl,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(<span class="at">cp =</span> <span class="fu">seq</span>(<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.01</span>)),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">control =</span> <span class="fu">rpart.control</span>(<span class="at">method =</span> <span class="st">"anova"</span>, <span class="at">minsplit =</span> <span class="dv">1</span>, <span class="at">minbucket =</span> <span class="dv">1</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>             )</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>tree</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CART 
+
+1007 samples
+  56 predictor
+
+No pre-processing
+Resampling: Cross-Validated (20 fold, repeated 10 times) 
+Summary of sample sizes: 957, 956, 956, 957, 957, 956, ... 
+Resampling results across tuning parameters:
+
+  cp    RMSE      Rsquared   MAE     
+  0.00  1435.036  0.8389156  1087.655
+  0.01  1407.227  0.8358503  1053.808
+  0.02  1540.777  0.8038972  1146.253
+  0.03  1651.892  0.7747854  1257.275
+  0.04  1651.892  0.7747854  1257.275
+  0.05  1651.892  0.7747854  1257.275
+  0.06  1651.892  0.7747854  1257.275
+  0.07  1651.892  0.7747854  1257.275
+  0.08  1651.892  0.7747854  1257.275
+  0.09  1651.892  0.7747854  1257.275
+  0.10  1651.892  0.7747854  1257.275
+
+RMSE was used to select the optimal model using the smallest value.
+The final value used for the model was cp = 0.01.</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="problem-set-3_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>RMSE is minimized when hyperparameter cp = 0.01. Choosing hyperparameters is a part of pre-pruning.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>rparttree <span class="ot">&lt;-</span> <span class="fu">rpart</span>(Price<span class="sc">~</span>., <span class="at">data =</span> training, <span class="at">method =</span> <span class="st">"anova"</span>, <span class="at">control =</span> (<span class="at">cp =</span> <span class="fl">0.01</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rpart.plot</span>(rparttree)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="problem-set-3_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="look-at-the-feature-importance-using-permuted-feature-importance-in-iml-package-with-loss-rmse-and-compare-ratio-and-determine-which-features-have-the-biggest-effect-and-which-might-be-okay-to-remove." class="level4">
+<h4 class="anchored" data-anchor-id="look-at-the-feature-importance-using-permuted-feature-importance-in-iml-package-with-loss-rmse-and-compare-ratio-and-determine-which-features-have-the-biggest-effect-and-which-might-be-okay-to-remove.">Look at the feature importance (using permuted feature importance in “iml” package, with loss = “rmse” and compare = “ratio”) and determine which features have the biggest effect, and which might be okay to remove.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>tree_predictor <span class="ot">=</span> iml<span class="sc">::</span>Predictor<span class="sc">$</span><span class="fu">new</span>(tree, <span class="at">data =</span> training)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>tree_imp <span class="ot">=</span> iml<span class="sc">::</span>FeatureImp<span class="sc">$</span><span class="fu">new</span>(tree_predictor, <span class="at">loss =</span> <span class="st">"rmse"</span>, <span class="at">compare =</span> <span class="st">"ratio"</span>, <span class="at">n.repetitions =</span> <span class="dv">30</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(tree_imp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="problem-set-3_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tree_imp<span class="sc">$</span>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               feature importance.05 importance importance.95 permutation.error
+1            Age_08_04      3.233959   3.312704      3.435833          4461.975
+2               Weight      1.138150   1.160294      1.181436          1562.832
+3                   KM      1.000000   1.000000      1.000000          1346.928
+4                   HP      1.000000   1.000000      1.000000          1346.928
+5                   CC      1.000000   1.000000      1.000000          1346.928
+6        Quarterly_Tax      1.000000   1.000000      1.000000          1346.928
+7        Fuel_Type_CNG      1.000000   1.000000      1.000000          1346.928
+8     Fuel_Type_Diesel      1.000000   1.000000      1.000000          1346.928
+9     Fuel_Type_Petrol      1.000000   1.000000      1.000000          1346.928
+10         Met_Color_1      1.000000   1.000000      1.000000          1346.928
+11         Color_Beige      1.000000   1.000000      1.000000          1346.928
+12         Color_Black      1.000000   1.000000      1.000000          1346.928
+13          Color_Blue      1.000000   1.000000      1.000000          1346.928
+14         Color_Green      1.000000   1.000000      1.000000          1346.928
+15          Color_Grey      1.000000   1.000000      1.000000          1346.928
+16           Color_Red      1.000000   1.000000      1.000000          1346.928
+17        Color_Silver      1.000000   1.000000      1.000000          1346.928
+18        Color_Violet      1.000000   1.000000      1.000000          1346.928
+19         Color_White      1.000000   1.000000      1.000000          1346.928
+20        Color_Yellow      1.000000   1.000000      1.000000          1346.928
+21         Automatic_1      1.000000   1.000000      1.000000          1346.928
+22             Doors_2      1.000000   1.000000      1.000000          1346.928
+23             Doors_3      1.000000   1.000000      1.000000          1346.928
+24             Doors_4      1.000000   1.000000      1.000000          1346.928
+25             Doors_5      1.000000   1.000000      1.000000          1346.928
+26             Gears_3      1.000000   1.000000      1.000000          1346.928
+27             Gears_4      1.000000   1.000000      1.000000          1346.928
+28             Gears_5      1.000000   1.000000      1.000000          1346.928
+29             Gears_6      1.000000   1.000000      1.000000          1346.928
+30     Mfr_Guarantee_1      1.000000   1.000000      1.000000          1346.928
+31   BOVAG_Guarantee_1      1.000000   1.000000      1.000000          1346.928
+32  Guarantee_Period_3      1.000000   1.000000      1.000000          1346.928
+33  Guarantee_Period_6      1.000000   1.000000      1.000000          1346.928
+34 Guarantee_Period_12      1.000000   1.000000      1.000000          1346.928
+35 Guarantee_Period_13      1.000000   1.000000      1.000000          1346.928
+36 Guarantee_Period_18      1.000000   1.000000      1.000000          1346.928
+37 Guarantee_Period_24      1.000000   1.000000      1.000000          1346.928
+38 Guarantee_Period_28      1.000000   1.000000      1.000000          1346.928
+39 Guarantee_Period_36      1.000000   1.000000      1.000000          1346.928
+40               ABS_1      1.000000   1.000000      1.000000          1346.928
+41          Airbag_1_1      1.000000   1.000000      1.000000          1346.928
+42          Airbag_2_1      1.000000   1.000000      1.000000          1346.928
+43             Airco_1      1.000000   1.000000      1.000000          1346.928
+44   Automatic_airco_1      1.000000   1.000000      1.000000          1346.928
+45     Boardcomputer_1      1.000000   1.000000      1.000000          1346.928
+46         CD_Player_1      1.000000   1.000000      1.000000          1346.928
+47      Central_Lock_1      1.000000   1.000000      1.000000          1346.928
+48   Powered_Windows_1      1.000000   1.000000      1.000000          1346.928
+49    Power_Steering_1      1.000000   1.000000      1.000000          1346.928
+50             Radio_1      1.000000   1.000000      1.000000          1346.928
+51         Mistlamps_1      1.000000   1.000000      1.000000          1346.928
+52       Sport_Model_1      1.000000   1.000000      1.000000          1346.928
+53  Backseat_Divider_1      1.000000   1.000000      1.000000          1346.928
+54      Metallic_Rim_1      1.000000   1.000000      1.000000          1346.928
+55 Parking_Assistant_1      1.000000   1.000000      1.000000          1346.928
+56           Tow_Bar_1      1.000000   1.000000      1.000000          1346.928</code></pre>
+</div>
+</div>
+<p>The only important variables are <code>Age_08_04</code> and <code>Weight</code>. Theoretically, we could remove all of the other variables.</p>
+</section>
+<section id="parsimony-is-about-obtaining-the-simplest-model-possible-without-oversimplifying.-remove-a-few-of-the-less-useful-features-and-retrain-cross-validate-tune-your-tree." class="level4">
+<h4 class="anchored" data-anchor-id="parsimony-is-about-obtaining-the-simplest-model-possible-without-oversimplifying.-remove-a-few-of-the-less-useful-features-and-retrain-cross-validate-tune-your-tree.">Parsimony is about obtaining the simplest model possible, without oversimplifying. Remove a few of the less useful features and retrain / cross validate / tune your tree.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>prunetree <span class="ot">&lt;-</span> <span class="fu">prune.rpart</span>(tree, <span class="at">cp =</span> .<span class="dv">01</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>prunetree</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CART 
+
+1007 samples
+  56 predictor
+
+No pre-processing
+Resampling: Cross-Validated (20 fold, repeated 10 times) 
+Summary of sample sizes: 957, 956, 956, 957, 957, 956, ... 
+Resampling results across tuning parameters:
+
+  cp    RMSE      Rsquared   MAE     
+  0.00  1435.036  0.8389156  1087.655
+  0.01  1407.227  0.8358503  1053.808
+  0.02  1540.777  0.8038972  1146.253
+  0.03  1651.892  0.7747854  1257.275
+  0.04  1651.892  0.7747854  1257.275
+  0.05  1651.892  0.7747854  1257.275
+  0.06  1651.892  0.7747854  1257.275
+  0.07  1651.892  0.7747854  1257.275
+  0.08  1651.892  0.7747854  1257.275
+  0.09  1651.892  0.7747854  1257.275
+  0.10  1651.892  0.7747854  1257.275
+
+RMSE was used to select the optimal model using the smallest value.
+The final value used for the model was cp = 0.01.</code></pre>
+</div>
+</div>
+<p>The pruning function did not remove any features. We already have the simplest model possible.</p>
+</section>
+<section id="use-the-model-resulting-from-question-9-and-test-predictions-on-the-testing-data.-compare-the-cross-validation-error-and-and-testing-data.-spend-some-time-interpreting-what-this-prediction-error-means-for-your-pricing-model-and-its-use-for-corollacrowd." class="level4">
+<h4 class="anchored" data-anchor-id="use-the-model-resulting-from-question-9-and-test-predictions-on-the-testing-data.-compare-the-cross-validation-error-and-and-testing-data.-spend-some-time-interpreting-what-this-prediction-error-means-for-your-pricing-model-and-its-use-for-corollacrowd.">Use the model resulting from question 9 and test predictions on the testing data. Compare the cross validation error and and testing data. Spend some time interpreting what this prediction error means for your pricing model and its use for CorollaCrowd.</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>training<span class="sc">$</span>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(prunetree, training)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>training<span class="sc">$</span>resid <span class="ot">&lt;-</span> (training<span class="sc">$</span>pred <span class="sc">-</span> training<span class="sc">$</span>Price)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(training<span class="sc">$</span>pred, training<span class="sc">$</span>Price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    ME     RMSE      MAE       MPE     MAPE
+Test set -1.692786e-13 1346.928 1009.732 -1.819971 10.24208</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>testing<span class="sc">$</span>pred <span class="ot">&lt;-</span> <span class="fu">predict</span>(prunetree, testing)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>testing<span class="sc">$</span>resid <span class="ot">&lt;-</span> (testing<span class="sc">$</span>pred <span class="sc">-</span> testing<span class="sc">$</span>Price)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(testing<span class="sc">$</span>pred, testing<span class="sc">$</span>Price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               ME    RMSE      MAE       MPE     MAPE
+Test set 83.21296 1562.93 1057.476 -1.250146 10.05107</code></pre>
+</div>
+</div>
+<p>The RMSE on the test set is higher than the RMSE on the training set, but not by much.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(training<span class="sc">$</span>pred, training<span class="sc">$</span>resid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="problem-set-3_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(testing<span class="sc">$</span>pred, testing<span class="sc">$</span>resid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="problem-set-3_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Residuals are centered fairly well around 0 for the training data. In the testing data, there are some outliers in the most expensive Corollas, as the model never predicts a value of over $22714.17.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(training<span class="sc">$</span>Price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 24990</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">max</span>(testing<span class="sc">$</span>Price)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 32500</code></pre>
+</div>
+</div>
+<p>The maximum <code>Price</code> in the training set is $24990 while the maximum <code>Price</code> in the testing set is $32500, so it makes sense why the model failed to capture these higher value cars. The model is most accurate for lower priced Corollas, as the distribution is skewed right.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
