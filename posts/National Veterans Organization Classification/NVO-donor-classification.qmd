@@ -1,12 +1,6 @@
 ---
----
----
-
-------------------------------------------------------------------------
-
 title: "National Veterans Organization Donor Classification"
-
-------------------------------------------------------------------------
+---
 
 #### 1. Write a paragraph explaining why classification is the right approach for the NVO's problem.
 
@@ -31,49 +25,33 @@ I plan on using precision, recall/sensitivity, and specificity to evaluate the p
 *After perusing and cleaning the data, decide on the most useful features and build the two classification models - remembering to follow proper principles (i.e., data partitioning, cross validation, etc.).*
 
 ```{r}
-
 library(tidyverse)
-
 library(corrplot)
-
 library(rpart)
-
 library(rpart.plot)
-
 library(GGally)
-
 library(dummy)
-
 library(caret)
-
 library(performanceEstimation)
-
 library(pROC)
-
 library(glmnet)
-
+library(yardstick)
+library(DALEX)
 ```
 
 ```{r}
-
+donors_orig <- read.csv("donors.csv")
 donors <- read.csv("donors.csv")
-
 ```
 
 ```{r}
-
 head(donors)
-
 summary(donors)
-
 ```
 
 ```{r}
-
 (apply(X = is.na(donors), MARGIN = 2, FUN = sum))
-
 sum(!complete.cases(donors))
-
 ```
 
 ##### Dealing with missing values
@@ -85,33 +63,22 @@ numerical variables with NA's: age
 categorical variables with NA's: numberChildren (mostly NA's), income rating, wealth rating (about half NA's), urbanicity, socioEconomicStatus, isHomeowner (about half NA's), gender
 
 ```{r}
-
 summary(donors$age)
-
 histogram(donors$age)
-
 ```
 
 median imputation for age variable:
 
 ```{r}
-
 donors <- donors %>%
-
   mutate(age = ifelse(is.na(age),
-
                            median(age, na.rm = TRUE),
-
                            age))
-
 ```
 
 ```{r}
-
 summary(donors$age)
-
 histogram(donors$age)
-
 ```
 
 EDA for categorical variables with NA's:
@@ -119,11 +86,8 @@ EDA for categorical variables with NA's:
 ##### isHomeowner
 
 ```{r}
-
 donors %>%
-
   count(isHomeowner, respondedMailing)
-
 ```
 
 5.17% response rate for isHomeowner ==True
@@ -133,99 +97,62 @@ donors %>%
 The only value for isHomeowner is TRUE. Even if we treat the NA's as their own category, the response rate is not significantly different for the two groups. We should drop the column.
 
 ```{r}
-
 donors <- donors %>%
-
   select(-isHomeowner)
-
 ```
 
 ##### numberChildren
 
 ```{r}
-
 donors %>%
-
   count(numberChildren)
-
 ```
 
 Most of the values for numberChildren are missing. We should drop the column.
 
 ```{r}
-
 donors <- donors %>%
-
   select(-numberChildren)
-
 ```
 
 ##### incomeRating
 
 ```{r}
-
 incomePred <- donors %>%
-
   count(incomeRating, respondedMailing) %>%
-
   group_by(incomeRating) %>%
-
   mutate(count = sum(n)) %>%
-
   group_by(respondedMailing) %>%
-
   mutate(respRate = n/count) %>%
-
   filter(respondedMailing == TRUE)
-
 incomePred
-
 histogram(donors$incomeRating)
-
 plot(x = incomePred$incomeRating, y = incomePred$respRate)
-
 ```
 
 incomeRating is positively correlated with the response rate, so we should keep the variable, even though it has a significant number of NA's. Conveniently, the response rate of the NA values is right in between the response rate for incomeLevel 4 and 5, and 5 is the most commonly occurring value. We can feel confident that replacing our NA's with the mode will not have a drastic effect on our model's performance.
 
 ```{r}
-
 donors <- donors %>%
-
   mutate(incomeRating = ifelse(is.na(incomeRating),
-
                            5,
-
                            incomeRating))
-
 histogram(donors$incomeRating)
-
 ```
 
 ##### wealthRating
 
 ```{r}
-
 wealthPred <- donors %>%
-
   count(wealthRating, respondedMailing) %>%
-
   group_by(wealthRating) %>%
-
   mutate(count = sum(n)) %>%
-
   group_by(respondedMailing) %>%
-
   mutate(respRate = n/count) %>%
-
   filter(respondedMailing == TRUE)
-
 wealthPred
-
 histogram(donors$wealthRating)
-
 plot(x = wealthPred$wealthRating, y = wealthPred$respRate)
-
 ```
 
 The choice, whether to impute or drop this column, is trickier than the last example. The relationship between wealthRating and response rate is positively correlated, but with much more irregularity than incomeRating. Additionally, the mode of the wealthRating variable is 9, the highest possible answer. The response rate for the NA's does not line up with the response rate for the 9's.
@@ -235,11 +162,8 @@ This is also a good time to consider multicollinearity. While wealthRating and i
 Ultimately, I have decided to drop the column. More advanced imputation techniques could be used to fix this problem but this is beyond the scope of this assignment.
 
 ```{r}
-
 donors <- donors %>%
-
   select(-wealthRating)
-
 ```
 
 ##### urbanicity, socioEconomicStatus, gender
@@ -247,63 +171,39 @@ donors <- donors %>%
 These three categorical variables have relatively low proportions of NA values so we don't need to worry so much about the impact of imputation on our model's accuracy. I will use mode imputation for all three of these variables.
 
 ```{r}
-
-getmode <- function(v) {
-
-   uniqv <- unique(v)
-
-   uniqv[which.max(tabulate(match(v, uniqv)))]
-
-}
-
-
+#getmode <- function(v) {
+   #uniqv <- unique(v)
+   #uniqv[which.max(tabulate(match(v, uniqv)))]
+#}
 
 donors <- donors %>% 
-
   mutate(urbanicity = if_else(is.na(urbanicity), 
-
-                         getmode(donors$urbanicity), 
-
+                         "unknown", 
                          urbanicity)) %>%
-
   mutate(socioEconomicStatus = if_else(is.na(socioEconomicStatus), 
-
-                         getmode(donors$socioEconomicStatus), 
-
+                         "unknown", 
                          socioEconomicStatus)) %>%
-
   mutate(gender = if_else(is.na(gender), 
-
-                         getmode(donors$gender), 
-
+                         "unknown", 
                          gender))
-
 ```
 
 ##### State
 
-State being a categorical variable with 50 levels may exert undue force on the model, so it's better to remove it.
+State being a categorical variable with 50 levels may exert undue force on the model. After testing this model both with and without state, the models without state perform much better, so I'm choosing to remove it.
 
 ```{r}
-
 donors <- donors %>%
-
   select(-state)
-
 ```
 
 ##### Correlation
 
 ```{r}
-
 num <- donors %>%
-
   keep(is.numeric)
-
 corr <- cor(num)
-
 corrplot(corr)
-
 ```
 
 The largest correlations are between variables smallestGiftAmount, largestGiftAmount, and averageGiftAmount, as well as between numberGifts and yearsSinceFirstDonation.
@@ -311,11 +211,8 @@ The largest correlations are between variables smallestGiftAmount, largestGiftAm
 We will remove smallestGiftAmount, largestGiftAmount, and yearsSinceFirstDonation.
 
 ```{r}
-
-#donors <- donors %>%
-
-  #select(-c("smallestGiftAmount", "largestGiftAmount", "yearsSinceFirstDonation"))
-
+donors <- donors %>%
+  select(-c("smallestGiftAmount", "largestGiftAmount", "yearsSinceFirstDonation"))
 ```
 
 ##### Scaling
@@ -323,201 +220,127 @@ We will remove smallestGiftAmount, largestGiftAmount, and yearsSinceFirstDonatio
 Lasso models are sensitive to the scale of the input features, so we need to do some scaling.
 
 ```{r}
-
 normalize <- function(x) {
-
   return((x-min(x))/(max(x)-min(x)))
-
 }
 
-
-
 donors <- donors %>%
-
   mutate_at(vars(age, mailOrderPurchases, totalGivingAmount, numberGifts, averageGiftAmount, monthsSinceLastDonation), normalize)
-
 ```
 
 ##### Dummies
 
 ```{r}
-
 donors$incomeRating <- as.factor(donors$incomeRating)
-
 donors_dummies <- dummy(donors)
-
 donors_dummies <- donors_dummies %>%
-
   mutate_all(as.factor)
-
 donors_num <- donors %>% keep(is.numeric)
-
 donors_bool <- donors %>% select(c("inHouseDonor", "plannedGivingDonor", "sweepstakesDonor", "respondedMailing"))
-
 donors_bool <- donors_bool*1
-
 donors_bool <- donors_bool %>%
-
   mutate_all(as.factor)
-
-
 
 donors_bool$respondedMailing <- as.factor(donors_bool$respondedMailing)
-
 donors_model <- bind_cols(donors_dummies, donors_num, donors_bool)
-
 ```
 
 #### 4. Build a logistic LASSO model using cross-validation on the training data to select the best \$\\lambda\$. View the coefficients at that chosen \$\\lambda\$ and see what features are in the model.
 
 ```{r}
-
 set.seed(567)
-
 samp = createDataPartition(donors_model$respondedMailing, p = 0.7, list = FALSE)
-
 lasso_train = donors_model[samp, ]
-
 lasso_test = donors_model[-samp,]
-
 rm(samp)
-
 ```
 
 ```{r}
-
-set.seed(567)
-
-lasso_train_down = downSample(x = select(lasso_train, -respondedMailing),
-
-                         y = lasso_train$respondedMailing,
-
-                         yname = "respondedMailing")
-
-lasso_train_down %>% select(respondedMailing) %>% table()
-
+#set.seed(567)
+#lasso_train_down = downSample(x = select(lasso_train, -respondedMailing),
+                         #y = lasso_train$respondedMailing,
+                         #yname = "respondedMailing")
+#lasso_train_down %>% select(respondedMailing) %>% table()
 ```
 
 ```{r}
-
 set.seed(567)
-
 lasso_train_smote <- smote(respondedMailing ~ .,
-
                    data = lasso_train,
-
                    perc.under = 2,
-
                    perc.over = 3)
 
-
-
 lasso_train_smote %>%
-
   select(respondedMailing) %>%
-
   table() 
-
 ```
 
 ```{r}
-
 #separate predictors and outcome
-
 x <- model.matrix(respondedMailing~., lasso_train_smote)[,-1]
-
 y <- lasso_train_smote$respondedMailing
-
 ```
 
 ```{r}
-
 set.seed(123) 
-
 cv.lasso <- cv.glmnet(x, y, alpha = 1, family = "binomial")
-
 model <- glmnet(x, y, alpha = 1, family = "binomial",
-
                 lambda = cv.lasso$lambda.min)
-
 #regression coefficients
-
 coef(model)
-
 ```
 
 ```{r}
-
 #preds
-
 x_test <- model.matrix(respondedMailing ~., lasso_test)[,-1]
-
 probabilities <- model %>% predict(newx = x_test, type="response")
-
-predicted_classes <- ifelse(probabilities > .50, "1", "0")
-
+predicted_classes <- ifelse(probabilities > .5, "1", "0")
 #accuracy
-
 observed_classes <- lasso_test$respondedMailing
-
 paste0("Model Accuracy: ", mean(predicted_classes == observed_classes))
-
 ```
 
-Our final accuracy is 92.6%. All variables with non-zero coefficients are included in the model.
+Our final accuracy is 88.3%. All variables with non-zero coefficients are included in the model.
 
-By choosing a low threshold of .2, we are allowing our model to predict more positive outcomes. In this case, the cost of a mailing without a response is lower than failing to send a mailing to a donor who would respond.
+By choosing a lower threshold than .5, we would allow our model to predict more positive outcomes. This would be useful if you had a limited list of donors and wanted to identify as many potential donors out of your list as possible. For this example, I'm assuming we have an effectively infinite donor base in order to maximize precision and ultimately the campaign's response rate.
 
 ```{r}
-
 plot(cv.lasso)
-
 cv.lasso$lambda.min
-
 ```
 
-The optimal $\lambda$ is .000314.
+The optimal $\lambda$ is .00070.
 
 ```{r}
-
 coef(cv.lasso, cv.lasso$lambda.min)
-
 ```
 
 ```{r}
-
 table(predicted_classes,observed_classes)
 
-
-
 ```
 
 ```{r}
-
 plot(roc.glmnet(model, 
-
                 newx = x, 
-
                 newy = y ), 
-
      type="l")  
 
+assess <- assess.glmnet(model, newx=x, newy=y)
+assess$auc
 ```
+
+AUC = .602
 
 #### 5. Build a decision tree model using cross-validation on the training data to select the best `cp` value. Use `rpart.plot()` to view the decision tree. What key features does it use?
 
 ##### Class Balance
 
 ```{r}
-
 donors_model %>% 
-
   select(respondedMailing) %>%
-
   table()
-
   
-
 ```
 
 Our classes are imbalanced. Only 5.3% of donors responded to the mailing. We need to take this into account in our model.
@@ -525,27 +348,18 @@ Our classes are imbalanced. Only 5.3% of donors responded to the mailing. We nee
 ##### Data Partition
 
 ```{r}
-
 set.seed(567)
-
 samp = createDataPartition(donors_model$respondedMailing, p = 0.7, list = FALSE)
-
 train = donors_model[samp, ]
-
 test = donors_model[-samp,]
-
 rm(samp)
-
 ```
 
 Check class balance of test and train sets:
 
 ```{r}
-
 train %>% select(respondedMailing) %>% table() %>% prop.table()
-
 test %>% select(respondedMailing) %>% table() %>% prop.table()
-
 ```
 
 The degree of imbalance is similar.
@@ -553,137 +367,80 @@ The degree of imbalance is similar.
 ##### Downsampling
 
 ```{r}
-
 set.seed(567)
-
 train_down = downSample(x = select(train, -respondedMailing),
-
                          y = train$respondedMailing,
-
                          yname = "respondedMailing")
-
 train_down %>% select(respondedMailing) %>% table()
-
 ```
 
 ```{r}
-
 set.seed(567)
-
 train_smote = smote(respondedMailing ~ .,
-
                    data = train,
-
                    perc.under = 2,
-
                    perc.over = 1.5)
 
-
-
 train_smote %>%
-
   select(respondedMailing) %>%
-
   table() 
-
 ```
 
 ##### Decision Tree
 
 ```{r}
-
 ctrl = caret::trainControl(method = "repeatedcv", number = 10, repeats = 5)
-
 ```
 
 ```{r}
-
 set.seed(567)
-
 unbalanced_tree = train(respondedMailing ~ .,
-
                         data = train,
-
                         method = "rpart",
-
                         metric = "Kappa",
-
                         trControl = ctrl,
-
                         tuneGrid = expand.grid(cp = seq(0.0, 0.03, 0.0005)))
-
-
 
 plot(unbalanced_tree)
-
 ```
 
 ```{r}
-
 set.seed(567)
-
 down_tree = train(respondedMailing ~ .,
-
                         data = train_down,
-
                         method = "rpart",
-
                         metric = "Kappa",
-
                         #control = rpart_ctrl,
-
                         trControl = ctrl,
-
                         tuneGrid = expand.grid(cp = seq(0.0, 0.03, 0.0005)))
-
-
 
 plot(down_tree)
-
 ```
 
 ```{r}
-
 set.seed(567)
-
 smote_tree = train(respondedMailing ~ .,
-
                         data = train_smote,
-
                         method = "rpart",
-
                         metric = "Kappa",
-
                         #control = rpart_ctrl,
-
                         trControl = ctrl,
-
                         tuneGrid = expand.grid(cp = seq(0.0, 0.03, 0.0005)))
 
-
-
 plot(smote_tree)
-
 ```
 
 ```{r}
-
 rpart.plot(unbalanced_tree$finalModel)
 
-
-
 ```
 
 ```{r}
-
 rpart.plot(down_tree$finalModel)
-
 ```
 
 ```{r}
-
 rpart.plot(smote_tree$finalModel)
-
 ```
 
 #### 6. Evaluate the performance on test data and look at and describe its performance according to your confusion matrix measures.
@@ -691,163 +448,139 @@ rpart.plot(smote_tree$finalModel)
 ##### Decision Trees
 
 ```{r}
-
 # Get class predictions
-
 unbalanced_test_class = predict(unbalanced_tree, newdata = test, type = "raw")
-
 down_test_class = predict(down_tree, newdata = test, type = "raw")
-
 smote_test_class = predict(smote_tree, newdata = test, type = "raw")
 
-
-
 # Get probability predictions
-
 unbalanced_test_prob = predict(unbalanced_tree, newdata = test, type = "prob")[,2]
-
 down_test_prob = predict(down_tree, newdata = test, type = "prob")[,2]
-
 smote_test_prob = predict(smote_tree, newdata = test, type = "prob")[,2]
-
 ```
 
 ```{r}
-
 pred_prob = predict(smote_tree, newdata = test, type = "prob")[,2]
-
 pred_class = factor(ifelse(pred_prob > 0.5, "1", "0"))
-
 confusionMatrix(pred_class, test$respondedMailing, positive = "1")
-
 ```
 
 ```{r}
+down_prob = predict(down_tree, newdata = test, type = "prob")[,2]
+down_class = factor(ifelse(down_prob > 0.5, "1", "0"))
+confusionMatrix(down_class, test$respondedMailing, positive = "1")
 
+```
+
+The key factor in the unbalanced and downsampled trees is averageGiftAmount, and the key factor in the SMOTE tree is numberGifts.
+
+```{r}
 unbalanced_cv_kappa = mean(unbalanced_tree$results$Kappa)
-
 unbalanced_test_kappa = confusionMatrix(unbalanced_test_class,
-
                                         test$respondedMailing,
-
                                         positive = "1")$overall[["Kappa"]]
-
 unbalanced_test_auc = ModelMetrics::auc(test$respondedMailing, unbalanced_test_prob)
 
-
-
 down_cv_kappa = mean(down_tree$results$Kappa)
-
 down_test_kappa = confusionMatrix(down_test_class,
-
                                   test$respondedMailing,
-
                                   positive = "1")$overall[["Kappa"]]
-
 down_test_auc = ModelMetrics::auc(test$respondedMailing, down_test_prob)
 
-
-
 smote_cv_kappa = mean(smote_tree$results$Kappa)
-
 smote_test_kappa = confusionMatrix(smote_test_class,
-
                                    test$respondedMailing,
-
                                    positive = "1",)$overall[["Kappa"]]
-
 smote_test_auc = ModelMetrics::auc(test$respondedMailing, smote_test_prob)
 
 ```
 
 ```{r}
-
 tibble("CV Kappa" = c(unbalanced_cv_kappa, down_cv_kappa, smote_cv_kappa),
-
        "Test Kappa" = c(unbalanced_test_kappa, down_test_kappa, smote_test_kappa),
-
        "Test AUC" = c(unbalanced_test_auc, down_test_auc, smote_test_auc),
-
        "Tree" = c("Unbalanced", "Down", "SMOTE")) %>%
-
   column_to_rownames(var = "Tree")
-
 ```
 
 #### 7. Create a ROC plot (with AUC) to compare the two model's performance and explain to NVO what the plot tells you.
 
 ```{r, warning=FALSE}
-
 par(pty="s")
-
 unbalanced_roc = roc(test$respondedMailing ~ unbalanced_test_prob, 
-
                      plot=TRUE, print.auc=TRUE, 
-
                      col="green", lwd=3, legacy.axes=TRUE)
-
 down_roc = roc(test$respondedMailing ~ down_test_prob,
-
                plot=TRUE, print.auc=TRUE, print.auc.y=0.4,
-
                col = "blue", lwd=3, legacy.axes=TRUE, add=TRUE)
-
 smote_roc = roc(test$respondedMailing ~ smote_test_prob,
-
                 plot=TRUE, print.auc=TRUE, print.auc.y=0.3,
-
                 col = "black", lwd=3, legacy.axes=TRUE, add=TRUE)
 
-
-
 legend("bottomright", legend=c("Unbalanced Data", "Downsampled Data", "SMOTE Data"),
-
-       col = c("green", "blue", "black"), cex = .75, lwd=3)
-
-
-
+       col = c("green", "blue", "black"), cex = .55, lwd=3)
 
 
 ```
+
+The ROC/AUC chart shows us how good the model is at distinguishing between positive and negative cases. A good ROC curve would hug the upper left corner of the plot, indicating a high TPR and low FPR. The AUC is the area under that curve, so the larger it is the better, with AUC = .5 being equivalent to random choice, and AUC = 1 meaning perfect classification.
+
+The highest AUC from these decision trees was created from the downsampled data, with AUC = .576. This is not much better than random choice. Our AUC for the lasso logisitic regression model was .602, marginally better than the decision tree on downsampled data.
 
 #### 8. Pick the best performing model, and view its precision recall chart and its cumulative gain chart.
 
 ```{r}
+xy <- data.frame(x,y)
+xyp <- as.data.frame(cbind(xy$y,probabilities))
+xyp$V1 <- as.factor(xyp$V1)
 
-unbalanced_pred <- predict(unbalanced_tree, newdata = test, type="prob")
-
-down_pred <- predict(down_tree, newdata = test, type="prob")
-
-smote_pred <- predict(smote_tree, newdata = test, type="prob")
-
-
-
-unbalanced_pred$pred <- ifelse(unbalanced_pred[1] > unbalanced_pred[2], 0, 1)
-
-unbalanced_pred$pred <- as.factor(unbalanced_pred$pred)
-
-
-
-down_pred$pred <- ifelse(down_pred[1] > down_pred[2], 0, 1)
-
-down_pred$pred <- as.factor(down_pred$pred)
-
-
-
-smote_pred$pred <- ifelse(smote_pred[1] > smote_pred[2], 0, 1)
-
-smote_pred$pred <- as.factor(smote_pred$pred)
-
+pr_curve(xyp, V1, s0) %>%
+  ggplot(aes(x = recall, y = precision)) +
+  geom_path() +
+  coord_equal() +
+  theme_bw()
 ```
 
 ```{r}
+test$respondedMailing <- as.numeric(test$respondedMailing)
+down_explain = DALEX::explain(model = down_tree,
+                               data = test,
+                               y = test$respondedMailing=="1",
+                               type='classification')
 
-confusionMatrix(unbalanced_pred$pred, test$respondedMailing, positive = "1")
 
-confusionMatrix(down_pred$pred, test$respondedMailing, positive = "1")
+down_perf = DALEX::model_performance(down_explain, cutoff = 0.5)
+```
 
-confusionMatrix(smote_pred$pred, test$respondedMailing, positive = "1")
+```{r}
+p1 = plot(down_perf, geom = "prc")
+p2 = plot(down_perf, geom = "gain")
+p1
+p2
+```
 
+```{r, eval=FALSE}
+##the predict function doesn't work for my logistic regression model
+#lasso_explain = DALEX::explain(model = model,
+                              # data = lasso_test[,-1],
+                              # y = lasso_test$respondedMailing=="1",
+                              # type='classification')
+
+
+#lasso_perf = DALEX::model_performance(lasso_explain, cutoff = 0.5)
 ```
 
 #### 9. Use the charts from parts 6 and 7 to describe how the model should perform for NVO and what it could mean if they do a mailer campaign for 50,000 people.
+
+```{r}
+mean(donors_orig$averageGiftAmount)
+length(which(donors_orig$respondedMailing == "TRUE")) / length(donors_orig$respondedMailing)
+```
+
+Say the average mailer costs \$1 per mailer. The mean of all donors' average gift amount is \$13.35. With the original response rate of 5.076%, for a 50,000 person campaign, we would spend \$50,000 and receive 13.35\*50000\*.05076 = \$33,882 in donations.
+
+If we performed a campaign guided by our lasso logistic regression model, our response rate would be true positive / all predicted positives = 212/(2115+212) = 9.11%. Our \$50,000 mailer campaign would now generate 13.35\*50000\*.0911 = \$60809 in donations, resulting in a \$10809 profit. The caveat with this model is that, out of 28,622 donors, we only sent mail to 2327 of them, or 8.13%. So, to perform a 50,000 donor campaign, we would need a list of about 615,000 donors. If we don't have this many potential donors, we could either buy a new list from a data brokerage, or we could lower our positive prediction threshold, but this would lower our precision and ultimately the profit generated from our campaign. I would recommend to NVO to do a smaller mailer campaign, or look into ways to either generate higher donations or decrease the cost of each mailer.
+
+The cumulative gains chart shows a 1:1 relationship between positive rate and true positive rate, so we can comfortably scale our mailer campaign without any precision loss.
+
+The precision recall chart is nearly a horizontal line, meaning that we don't get any precision loss from increasing recall/sensitivity.

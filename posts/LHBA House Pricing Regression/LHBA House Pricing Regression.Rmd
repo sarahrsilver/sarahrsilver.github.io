@@ -1,0 +1,32 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-10-15"
+---
+
+```{r libraries}
+library(tidyverse)
+
+```
+
+```{r read in}
+pre <- read.csv("PreCrisisCV.csv")
+post <- read.csv("PostCrisisCV.csv")
+market <- read.csv("OnMarketTest.csv")
+```
+
+# LHBA House Pricing Model
+
+### To the best of your ability, strive develop a clear description of the LHBA's big-picture business problem. Then define some more clearly defined sub-problems that would be more specific questions or problems whose solution would be inline with solving LHBA's problem.
+
+The Local Home Builder's Association's business relies on accurate house pricing prediction. Historically, they have used county-assessed home values, which were typically similar to the final sale price of each home. However, due to the 2008 financial crisis, market forces have caused house prices to differ significantly from their assessed values.
+
+### Write 3 high quality questions you would want to ask LHBA stakeholders to follow up and get more information or insight into their business.
+
+### Translate LHBA's framed business problem into an analytics problem (i.e., numbers/measures to calculate, things to predict, how to visualize or present those things to affect a decision, etc.)
+
+### Make sure to connect your business / analytic problems to decisions that need to be made and ask yourself if the "data science" will improve the decision and what the value of the improved decision making could be.
+
+### Write a couple of paragraphs describing how CRISP-DM would apply to the process of providing LHBA with a solution.
+
+### Prepare the data as necessary and train a model to predict home selling prices, making sure to evaluate its performance on the test data and interpret the error and its meaning for LHBA operations.
