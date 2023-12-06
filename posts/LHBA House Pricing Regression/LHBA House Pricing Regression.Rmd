@@ -6,7 +6,8 @@ date: "2023-10-15"
 
 ```{r libraries}
 library(tidyverse)
-
+library(caret)
+library(FNN)
 ```
 
 ```{r read in}
@@ -19,14 +20,273 @@ market <- read.csv("OnMarketTest.csv")
 
 ### To the best of your ability, strive develop a clear description of the LHBA's big-picture business problem. Then define some more clearly defined sub-problems that would be more specific questions or problems whose solution would be inline with solving LHBA's problem.
 
-The Local Home Builder's Association's business relies on accurate house pricing prediction. Historically, they have used county-assessed home values, which were typically similar to the final sale price of each home. However, due to the 2008 financial crisis, market forces have caused house prices to differ significantly from their assessed values.
+The Local Home Builder's Association's business relies on accurate house pricing prediction. Historically, they have used county-assessed home values, which were typically similar to the final sale price of each home. However, due to the 2008 financial crisis, market forces have caused house prices to differ significantly from their assessed values. Thus, a new pricing model which takes into account current house pricing trends is necessary for LHBA, as their revenue model relies on the purchase, sale, lending, and construction of homes.
+
+Some sub-problems/questions might include:
+
+-   What is the difference in housing pricing patterns before and after the market crash? How does this affect the pricing of the products LHBA offers? What are other companies that offer similar products to LHBA doing about this issue?
+
+-   What is the current pricing model dependent on and why is it not in line with market realities?
+
+-   What predictive factors/data do we have access to for building our model?
 
 ### Write 3 high quality questions you would want to ask LHBA stakeholders to follow up and get more information or insight into their business.
 
-### Translate LHBA's framed business problem into an analytics problem (i.e., numbers/measures to calculate, things to predict, how to visualize or present those things to affect a decision, etc.)
+-   What are some instances in which the county-assessed valuation has significantly differed from the sale price of the house? How did this affect LHBA's revenue or decision-making process?
 
-### Make sure to connect your business / analytic problems to decisions that need to be made and ask yourself if the "data science" will improve the decision and what the value of the improved decision making could be.
+-   How will the new pricing model be incorporated into LHBA's day-to-day operations? Who will be accessing the predictions and what will they use them for? Is interprability or accuracy a greater concern?
+
+-   How has the financial crisis affected LHBA in ways other than the obsolete pricing model? Are there any specific business issues LHBA is facing that we should take into account while building the new model?
+
+### Translate LHBA's framed business problem into an analytics problem (i.e., numbers/measures to calculate, things to predict, how to visualize or present those things to affect a decision, etc.). Make sure to connect your business / analytic problems to decisions that need to be made and ask yourself if the "data science" will improve the decision and what the value of the improved decision making could be.
+
+Our goal is to build a regression model to predict home prices in order for LHBA to make informed, data-driven business decisions that will allow the business and their clients to make the most out of their products and services. We will train our model using relevant factors including lot size, square footage, number of beds/baths, age of house, and condition, among others. By performing cross-validation, we will be able to test our model and assess its accuracy.
 
 ### Write a couple of paragraphs describing how CRISP-DM would apply to the process of providing LHBA with a solution.
 
+The first step to solving this issue using the CRISP-DM approach is getting an understanding of the business problem at hand. This would involve communicating with LHBA about their experiences surrounding the issue and figuring out what the business needs from you as a data scientist.
+
+Next, we need to understand the data we have, and the data we need. In our context, we have pre- and post-crisis housing price datasets, as well as a dataset with current house listings in the area which haven't sold yet. Our goal in this step is to understand what each column is and what the values in these columns mean. We also need to assess the quality of our data. Do we have missing values? Are there values that don't make sense in context? This also incorporates the next step in CRISP-DM, data preparation. Here, we use the understanding we've gained about our datasets and clean them up accordingly. This includes dealing with missing values through methods like imputation, or dropping columns we deem unnecessary. We also normalize our numerical variables to get values on a similar scale.
+
 ### Prepare the data as necessary and train a model to predict home selling prices, making sure to evaluate its performance on the test data and interpret the error and its meaning for LHBA operations.
+
+#### Exploratory Data Analysis
+
+```{r}
+#add together lot and building value to get total appraised value
+pre$Value <- pre$LandValue + pre$BuildingValue
+post$Value <- post$LandValue + post$BuildingValue
+market$Value <- market$LandValue + market$BuildingValue
+```
+
+```{r}
+ggplot() +
+  geom_boxplot(data = pre, aes(y = Value, x = "Pre-crisis")) +
+  geom_boxplot(data = post, aes(y = Value, x = "Post-crisis")) +
+  geom_boxplot(data = market, aes(y = Value, x = "Current market")) +
+  ggtitle("Assessed building and land value before and after 2008 financial crisis")
+```
+
+Median assessed values from before and after the financial crisis, as well as current market listings, are not significantly different.
+
+```{r}
+ggplot() +
+  geom_boxplot(data =pre, aes(x = "Pre-crisis", y = Price)) +
+  geom_boxplot(data =post, aes(x = "Post-crisis", y = Price)) +
+  ggtitle("Housing sale prices before and after 2008 financial crisis")
+
+```
+
+```{r}
+pre$Discrepancy <- pre$Price - pre$Value
+post$Discrepancy <- post$Price - post$Value
+
+ggplot() +
+  geom_boxplot(data = pre, aes(x = "Pre-crisis", y = Discrepancy)) +
+  geom_boxplot(data = post, aes(x = "Post-crisis", y = Discrepancy))
+
+```
+
+```{r}
+pre_tbl <- pre %>%
+  select(c(Value, Price, Discrepancy)) %>%
+  summarize_all(mean)
+
+post_tbl <- post %>%
+  select(c(Value, Price, Discrepancy)) %>%
+  summarize_all(mean)
+
+tbl <- rbind(pre_tbl, post_tbl, make.row.names = TRUE)
+rownames(tbl) <- c("Pre-crisis", "Post-crisis")
+tbl
+```
+
+Before the crisis, the mean home price was higher than the mean home value, and the opposite was true for after the crisis. This means that houses in the area went from being sold for, on average, \$1216 over county-assessed value, to being sold for, on average, \$4579 under county-assessed value.
+
+#### Data Pre-processing
+
+```{r}
+summary(pre)
+summary(post)
+summary(market)
+```
+
+```{r}
+pre %>%
+  summarise_all(funs(sum(is.na(.))))
+
+post %>%
+  summarise_all(funs(sum(is.na(.))))
+```
+
+There are no NA values in our datasets. Some numerical variables, like Basement and Deck, have 0's, which represents homes which don't have basements or decks. There are also 0's in factor type variables like PoorCondition and GoodCondition.
+
+##### Factor Variables
+
+```{r eval=FALSE, include=FALSE}
+pre$PoorCondition <- as.factor(pre$PoorCondition)
+pre$GoodCondition <- as.factor(pre$GoodCondition)
+pre$AC <- as.factor(pre$AC)
+
+post$PoorCondition <- as.factor(post$PoorCondition)
+post$GoodCondition <- as.factor(post$GoodCondition)
+post$AC <- as.factor(post$AC)
+
+market$PoorCondition <- as.factor(market$PoorCondition)
+market$GoodCondition <- as.factor(market$GoodCondition)
+market$AC <- as.factor(market$AC)
+```
+
+##### Bathrooms
+
+There are 2 bathroom columns, Baths and Toilets. Baths is the number of full baths, toilets is the number of half baths. We can add these together by multiplying the number of Toilets by .5 and adding that number to Baths.
+
+```{r}
+#pre$Baths <- pre$Baths + 0.5*pre$Toilets
+
+#post$Baths <- post$Baths + 0.5*post$Toilets
+
+#market$Baths <- market$Baths + 0.5*market$Toilets
+```
+
+##### Normalizing Numerical Variables
+
+```{r}
+normalize <- function(x) {
+
+  return((x-min(x))/(max(x)-min(x)))
+
+}
+
+#saving unscaled version of post
+post_unscaled <- post
+
+post <- post %>%
+  mutate_at(vars(Value, Acres, AboveSpace, Basement, Deck, Baths, Toilets, Fireplaces, Beds, Rooms, Age, Car), normalize)
+
+pre <- pre %>%
+  mutate_at(vars(Value, Acres, AboveSpace, Basement, Deck, Baths, Toilets, Fireplaces, Beds, Rooms, Age, Car), normalize)
+
+market <- market %>%
+  mutate_at(vars(Value, Acres, AboveSpace, Basement, Deck, Baths, Toilets, Fireplaces, Beds, Rooms, Age, Car), normalize)
+
+```
+
+##### Dropping Columns
+
+columns to drop:
+
+Value (created for EDA)
+
+Discrepancy (created for EDA)
+
+PoorCondition, GoodCondition, AC (categorical variables -- KNN regression requires numerical variables. Assigning 1 and 0 as numerical values for these variables led to significantly larger residuals.)
+
+Property (ID variable)
+
+Toilets (we incorporated this into Baths)
+
+```{r}
+pre <- pre %>%
+  select(-c(Value, PoorCondition, Property, Discrepancy, AC, GoodCondition))
+
+post <- post %>%
+  select(-c(Value, PoorCondition, Property, Discrepancy, AC, GoodCondition))
+
+market <- market %>%
+  select(-c(Value, PoorCondition, Property, AC, GoodCondition))
+```
+
+#### Building the Model
+
+We will use a KNN regression model for this problem. KNN is, essentially, finding "neighbors" (other observations with similar predictor values), and making predictions based on those neighbors. This is useful as housing prices are market dependent, so the sale price should theoretically be similar between houses with similar stats.
+
+We will be using the post-crisis dataset to train and test our model. Once we are happy with our model's accuracy, we will use it to make predictions on the current market dataset to provide to LHBA.
+
+```{r data partition, message=FALSE, warning=FALSE}
+set.seed(567)
+
+samp = createDataPartition(post$Price, p = 0.7, list = FALSE)
+training = post[samp, ]
+testing = post[-samp,]
+
+rm(samp)
+
+```
+
+```{r predictor response split}
+
+x_train <- training %>% select(-Price)
+y_train <- training$Price
+x_test <- testing %>% select(-Price)
+```
+
+```{r knn}
+
+k_vals = c(3, 5, 6, 7, 8, 10, 15, 20)
+k = 1
+rmse_vals <- c()
+
+for (k in k_vals){
+  
+model <- knn.reg(train = x_train, test = x_test, y = y_train, k = k)
+
+rmse <- sqrt(mean((model$pred - testing$Price)^2))
+rmse_vals <- append(rmse_vals, rmse)
+printrmse <- paste0("RMSE for k=", k, ": ", rmse)
+
+
+print(printrmse)
+k <- k + 1
+}
+
+
+```
+
+```{r}
+plot(x = k_vals, y = rmse_vals)
+
+```
+
+The k value that produces the lowest RMSE is k=7. This means the prediction for each observation in the test set is the mean of the seven nearest observations in the training set.
+
+##### Evaluating the Final Model
+
+```{r}
+final_model <- knn.reg(train = x_train, test = x_test, y = y_train, k = 7)
+
+set.seed(567)
+samp = createDataPartition(post_unscaled$Price, p = 0.7, list = FALSE)
+testing_unscaled = post_unscaled[-samp,]
+rm(samp)
+
+testing_unscaled$pred <- final_model$pred
+testing_unscaled$model_resid <- testing_unscaled$pred - testing_unscaled$Price
+
+testing_unscaled$value <- testing_unscaled$BuildingValue + testing_unscaled$LandValue
+testing_unscaled$appraisal_resid <- testing_unscaled$value - testing_unscaled$Price
+
+#abs values for resid comparison
+testing_unscaled$abs_model_resid <- abs(testing_unscaled$model_resid)
+testing_unscaled$abs_appraisal_resid <- abs(testing_unscaled$appraisal_resid)
+test_tbl <- testing_unscaled %>%
+  select(c(value, Price, model_resid, appraisal_resid, abs_model_resid, abs_appraisal_resid)) %>%
+  summarize_all(mean)
+test_tbl
+  
+rmse_model <- sqrt(mean((final_model$pred - testing_unscaled$Price)^2))
+rmse_appraisal <- sqrt(mean((testing_unscaled$value - testing_unscaled$Price)^2))
+rmse_model
+rmse_appraisal
+
+```
+
+County appraisal values are, on average, \$4564 higher than the sale price of each of the houses in the test set. The KNN model predictions are, on average, \$472 under the sale price of the houses. The RMSE for the county appraisal model is 20037, and the RMSE for our KNN model is 20460.
+
+##### Providing Predictions for Current Market Data
+
+```{r}
+market <- market %>% select(-Price)
+market_model <- knn.reg(train = x_train, test = market, y = y_train, k = 7)
+market$pred <- market_model$pred
+```
