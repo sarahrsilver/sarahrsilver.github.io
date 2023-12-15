@@ -1,0 +1,232 @@
+---
+title: "Yum! Sales"
+output: 
+  prettydoc::html_pretty:
+    theme: leonids
+date: "2023-12-10"
+---
+
+### Introduction
+
+Our dataset comes from real 2022-2023 sales data from a local restaurant, Yum! Kitchen and Bakery. The restaurant is a casual counter service restaurant in the Merriam Park neighborhood of St. Paul with an extensive menu including salads, sandwiches, entrees, as well as coffee and pastries.
+
+Our goal is to predict sales based on factors including weather, holidays, and local events including games at nearby Allianz Field and the State Fair. Accurate sales predictions is essential in restaurants which tend to have narrow margins, so the business must prepare accordingly.
+
+#### Business Problem
+
+Yum! Kitchen is looking to save money on heat throughout the winter. One of the major factors contributing to Yum! Kitchen’s heating bill is the screened patio, which can be used during the winter but is not well insulated due to the vinyl screen windows, so they are considering closing it on days when the restaurant is not busy enough to justify the cost. They would like to know what factors to consider when deciding whether to close the patio. We will be answering this question by evaluating various external features that could impact sales including local events and weather. By evaluating these features we will discover an educated solution for Yum! Kitchen business problem.
+
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(kableExtra)
+library(RColorBrewer)
+library(forecast)
+library(plotly)
+library(corrplot)
+library(caret)
+library(MLmetrics)
+library(fastDummies)
+library(readxl)
+library(showtext)
+font_add(family = "Raleway", "C:/Users/User/Downloads/Raleway/static/Raleway-Regular.ttf")
+
+showtext_auto()
+```
+
+### Codebook
+
+```{r}
+codebook <- data.frame(factor = c('date', 'net_sales', 'lag_sales', 'orders', 'guests', 'holiday','soccer','state_fair','high_temp','low_temp','inches_precipitation','inches_snow', 'mothers_day', 'thanksgiving_catering', 'day_of_week', 'quarter'),
+                       description = c('date', 'total sales per day (USD)', 'net sales on same day of week from week prior', 'number of orders placed', 'number of guests', '1 on significant holidays when restaurant is open, else 0', '1 on days of MNUFC home games at nearby Allianz Field, else 0', '1 on days during the MN State Fair, else 0', 'high temperature in F', 'low temperature in F', 'inches of rain', 'inches of snow', '1 on Mothers Day, else 0', '1 on day before Thanksgiving, when restaurant offers catering, else 0', 'day of week', 'business quarter (1-4)'))
+
+kable(codebook, format = "markdown")
+```
+
+```{r}
+sales <- read_excel("yum_sales.xlsx")
+
+sales$date <- as.Date(sales$date)
+#sales$date <- sales$date + 365*2
+#sales$date[1:59] <- sales$date[1:59] +1
+sales <- sales %>% mutate(lag_sales = lag(net_sales, n = 7, default = NA))
+sales <- drop_na(sales)
+sales$holiday <- ifelse(sales$closed ==1, 0, sales$holiday)
+
+
+#median imputation for days when restaurant is closed
+sales <- sales %>%
+  select(-closed) %>%
+  mutate(net_sales = ifelse(net_sales == 0, NA, net_sales)) %>%
+  mutate(net_sales = ifelse(is.na(net_sales), median(net_sales, na.rm = TRUE), net_sales))
+
+#adding columns for mothers_day, thanksgiving_catering, 
+sales <- sales %>%
+  mutate(mothers_day = ifelse(date == "2022-05-08" | date == "2023-05-14", 1, 0)) %>%
+  mutate(thanksgiving_catering = ifelse(date == "2022-11-23" | date == "2023-11-22", 1, 0)) %>%
+  mutate(holiday = ifelse(mothers_day == 1 | thanksgiving_catering == 1, 0, holiday)) %>%
+  mutate(month = month(as.POSIXlt(date, format="%Y/%m/%d"))) %>%
+  mutate(month_str = ifelse(month <10, paste(0,month, sep = ""), month)) %>%
+  mutate(quarter = ifelse(month < 4, 1, ifelse(month > 3 & month < 7, 2, ifelse(month > 6 & month < 10, 3, 4)))) %>%
+  mutate(q_year = paste(year(as.POSIXlt(date, format="%Y/%m/%d")), quarter, sep="-")) %>%
+  mutate(month_year = paste(year(as.POSIXlt(date, format="%Y/%m/%d")), month_str, sep="-")) 
+
+#day of week dummy columns
+dow <- sales %>%
+  select(day_of_week)
+dow_dummies <- dummy_cols(dow, remove_first_dummy = TRUE)
+sales <- sales %>%
+  cbind(dow_dummies) %>%
+  select(-day_of_week)
+```
+
+```{r}
+x<- ggplot(sales)+
+  geom_line(aes(x = date, y = net_sales), stat = "identity") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        text=element_text(family = "Raleway"))
+
+ggplotly(x)
+```
+
+Above is a line plot visualizing daily net sales from 1-1-2022 through 12-3-2023. There are four spikes you can see in the line plot over the two years. These spikes where there is a large amount of sales year after year take place on Mother's Day and Thanksgiving.
+
+```{r}
+m_box <- ggplot(sales)+ 
+  geom_boxplot(aes(x = month_year, y = net_sales, group = month_year))+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        text=element_text(family = "Raleway"))  
+
+q_box <- ggplot(sales %>% filter(q_year != "2023-4")) +
+  geom_boxplot(aes(x= q_year, y = net_sales, group = q_year)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        text=element_text(family = "Raleway"))  
+
+ggplotly(m_box)
+ggplotly(q_box)
+```
+
+```{r message=FALSE, warning=FALSE}
+line_data_q <- sales %>%
+  filter(q_year != "2023-4") %>%
+  group_by(q_year) %>%
+  summarize(quarterly_sales = sum(net_sales)/1000) %>%
+  mutate(q_year = factor(q_year, levels = unique(q_year))) 
+
+line_data_m <- sales %>%
+  filter(month_year != "2023-12") %>%
+  group_by(month_year) %>%
+  summarize(monthly_sales = sum(net_sales)/1000) %>%
+  mutate(month_year = factor(month_year), levels = unique(month_year))
+
+
+
+line_data_q$month <- as.factor(c("2022-02", "2022-05", "2022-08", "2022-11", "2023-02", "2023-05", "2023-08"))
+
+
+
+q_line <-  ggplot() +
+  geom_line(data = line_data_q, aes(x = month, y = quarterly_sales, label = q_year, group = 1), color = "darkred") +
+  geom_line(data = line_data_m, aes(x = month_year, y = monthly_sales, group = 1), color = "darkblue")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        text=element_text(family = "Raleway")) +
+  ylab("Total Sales per Month/Quarter in Thousands") 
+ggplotly(q_line, tooltip = c("month_year", "quarterly_sales", "monthly_sales", "q_year"))
+
+```
+
+In the line graph above we showcased the fluctuation in total monthly and quarterly net sales. The monthly net_sales is showcased with the blue line and the quarterly net_sales is showcased with the red line. there was a general upward trend with Q2 and Q4 continuously being high performing quarters. Q1 and Q3 consistently under performed compared to the others. One can see the spikes in the blue lines in the months of nearing Mother's Day and the Months nearing the holiday season.
+
+```{r}
+#data partition with testing data representing Q3 through the end of the dataset in December 2023
+train <- sales %>% filter(date <='2023-05-31')
+test <- sales %>% filter(date >'2023-05-31')
+```
+
+```{r}
+c <- cor(sales %>% select(net_sales,high_temp, low_temp, inches_precipitation, inches_snow))
+corrplot(c)
+```
+
+The only correlated factors are high_temp and low_temp. We should only use one in our model.
+
+### Feature Selection
+
+```{r}
+featurePlot(keep(sales, is.numeric), sales$net_sales, plot = "scatter")
+```
+
+The feature plot shows us the correlation between each feature and our target variable, net_sales. We will be removing orders and guests as these cannot be known ahead of time. We will be using a polynomial transformation on high_temp and inches_precipitation in order to capture their slightly nonlinear relationships with net_sales.
+
+### Building the Model
+
+```{r}
+lm1 <- lm(net_sales ~ day_of_week_Sunday + day_of_week_Monday + day_of_week_Tuesday + day_of_week_Wednesday + day_of_week_Thursday + day_of_week_Saturday + soccer + holiday + state_fair + poly(high_temp, 2) + inches_precipitation + inches_snow + mothers_day + thanksgiving_catering + month, data = train)
+test$preds <- predict(lm1, test)
+
+lm_lag <- lm(net_sales ~ day_of_week_Sunday + day_of_week_Monday + day_of_week_Tuesday + day_of_week_Wednesday + day_of_week_Thursday + day_of_week_Saturday + soccer + holiday + state_fair +  poly(high_temp,2) + inches_precipitation + inches_snow  + lag_sales + mothers_day + thanksgiving_catering + month, data = train)
+test$preds <- predict(lm1, test)
+test$lag_preds <- predict(lm_lag, test)
+train$preds <- predict(lm1, train)
+train$lag_preds <- predict(lm_lag, train)
+
+pred <- ggplot() +
+  geom_line(data = sales, aes(x = date, y = net_sales)) +
+  geom_line(data = test, aes(x = date, y = lag_preds), color = "turquoise", alpha = .7) +
+  geom_line(data = test, aes(x = date, y = preds), color = "orchid", alpha = .7) +
+  geom_line(data = train, aes(x = date, y = lag_preds), color = "blue", alpha = .6) +
+  geom_line(data = train, aes(x = date, y = preds), color = "red", alpha = .6) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        text=element_text(family = "Raleway"))  
+ggplotly(pred)
+```
+
+In the plot above, the black line represents actual sales. The predictions made by the model without the lag variable, lm1, are shown as the red line on the training data and the dark red line on the testing data. The predictions made by the model with the lag variable, lm_lag, are shown as the blue line on the training data and the dark blue line on the testing data. The graph shows that the inclusion of the lag variable improves the predictions by allowing for bigger fluctuations, which mirrors the realities of sales patterns in the restaurant industry.
+
+```{r}
+par(mfrow = c(2, 2))
+plot(lm1)
+plot(lm_lag)
+```
+
+The residuals graphs of both models shows little to no pattern in residual values. This affirms that a linear model is right for our data.
+
+```{r}
+summary(lm1)$r.sq
+summary(lm_lag)$r.sq
+```
+
+The R-squared value for the model including the lag variable is slightly higher. Our lag model accounts for 73% of the variability in the observed net sales.
+
+```{r}
+kable(summary(lm1)$coefficients, format = "markdown")
+kable(summary(lm_lag)$coefficients, format = "markdown")
+```
+
+```{r}
+summary(lm1)
+summary(lm_lag)
+```
+
+The p-values between the two models shows that each model was influenced by a slightly different set of factors.
+
+The lm1 model (no lag) found the variables state_fair, high_temp, and inches_precipitation\^2 to be not statistically significant at a level of p = 0.05
+
+The lm_lag model only found the variables state_fair and inches_precipitation\^2 to be not statistically significant at a significance level of p = 0.05.
+
+```{r}
+#changing $0 sales days to $.01 so MAPE calculation doesn't return infinity
+test$net_sales <- ifelse(test$net_sales == 0, .01, test$net_sales)
+
+MAPE(test$preds, test$net_sales)
+MAPE(test$lag_preds, test$net_sales)
+```
+
+The MAPE, or mean average percent error, was lower for the model with the lag variable, meaning this model made better predictions than the model without the lag variable.
+
+### Outcomes
+
+We found through our results and outcomes that the quarters with the most net_sales was in Q2 due to a heavy increase in sales on and around mother’s day. There was also a heavy increase in Q4 due to catering for the holiday season with an increase in sales near Thanksgiving and the beginning of Christian and Jewish Holidays.Year over year there tended to be less sales in Q1 and Q3. In the coefficients of the linear regression model, it evaluates how much one specific feature affects the net_sales. 
+
+We found through this method that they should close the patio during Q1 weekdays. Even though there are many cold days in Q4 we do not recommend closing the patio because this is the most profitable quarter year after year. They should also close the outdoor patio on days when it snows. They should keep it open on days when there is a MN FC United Soccer game or when it is a holiday. The patio should always be open on Mother’s Day and the day before Thanksgiving, because these are the busiest days of the year. For further analysis we would like to gain a better understanding of how the patio’s heating costs might be affected by outdoor temperatures. 
+
