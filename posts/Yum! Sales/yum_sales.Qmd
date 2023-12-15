@@ -14,8 +14,7 @@ Our goal is to predict sales based on factors including weather, holidays, and l
 
 #### Business Problem
 
-Yum! Kitchen is looking to save money on heat throughout the winter. One of the major factors contributing to Yum! Kitchen’s heating bill is the screened patio, which can be used during the winter but is not well insulated due to the vinyl screen windows, so they are considering closing it on days when the restaurant is not busy enough to justify the cost. They would like to know what factors to consider when deciding whether to close the patio. We will be answering this question by evaluating various external features that could impact sales including local events and weather. By evaluating these features we will discover an educated solution for Yum! Kitchen business problem.
-
+Yum! Kitchen is looking to save money on heat throughout the winter. One of the major factors contributing to Yum! Kitchen's heating bill is the screened patio, which can be used during the winter but is not well insulated due to the vinyl screen windows, so they are considering closing it on days when the restaurant is not busy enough to justify the cost. They would like to know what factors to consider when deciding whether to close the patio. We will be answering this question by evaluating various external features that could impact sales including local events and weather. By evaluating these features we will discover an educated solution for Yum! Kitchen business problem.
 
 ```{r message=FALSE, warning=FALSE}
 library(tidyverse)
@@ -29,7 +28,7 @@ library(MLmetrics)
 library(fastDummies)
 library(readxl)
 library(showtext)
-font_add(family = "Raleway", "C:/Users/User/Downloads/Raleway/static/Raleway-Regular.ttf")
+font_add(family = "Raleway", "./Raleway/static/Raleway-Regular.ttf")
 
 showtext_auto()
 ```
@@ -83,10 +82,12 @@ sales <- sales %>%
 ```{r}
 x<- ggplot(sales)+
   geom_line(aes(x = date, y = net_sales), stat = "identity") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        text=element_text(family = "Raleway"))
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)
+        #, text=element_text(family = "Raleway")
+        )
 
 ggplotly(x)
+
 ```
 
 Above is a line plot visualizing daily net sales from 1-1-2022 through 12-3-2023. There are four spikes you can see in the line plot over the two years. These spikes where there is a large amount of sales year after year take place on Mother's Day and Thanksgiving.
@@ -226,7 +227,6 @@ The MAPE, or mean average percent error, was lower for the model with the lag va
 
 ### Outcomes
 
-We found through our results and outcomes that the quarters with the most net_sales was in Q2 due to a heavy increase in sales on and around mother’s day. There was also a heavy increase in Q4 due to catering for the holiday season with an increase in sales near Thanksgiving and the beginning of Christian and Jewish Holidays.Year over year there tended to be less sales in Q1 and Q3. In the coefficients of the linear regression model, it evaluates how much one specific feature affects the net_sales. 
+We found through our results and outcomes that the quarters with the most net_sales was in Q2 due to a heavy increase in sales on and around mother's day. There was also a heavy increase in Q4 due to catering for the holiday season with an increase in sales near Thanksgiving and the beginning of Christian and Jewish Holidays.Year over year there tended to be less sales in Q1 and Q3. In the coefficients of the linear regression model, it evaluates how much one specific feature affects the net_sales.
 
-We found through this method that they should close the patio during Q1 weekdays. Even though there are many cold days in Q4 we do not recommend closing the patio because this is the most profitable quarter year after year. They should also close the outdoor patio on days when it snows. They should keep it open on days when there is a MN FC United Soccer game or when it is a holiday. The patio should always be open on Mother’s Day and the day before Thanksgiving, because these are the busiest days of the year. For further analysis we would like to gain a better understanding of how the patio’s heating costs might be affected by outdoor temperatures. 
-
+We found through this method that they should close the patio during Q1 weekdays. Even though there are many cold days in Q4 we do not recommend closing the patio because this is the most profitable quarter year after year. They should also close the outdoor patio on days when it snows. They should keep it open on days when there is a MN FC United Soccer game or when it is a holiday. The patio should always be open on Mother's Day and the day before Thanksgiving, because these are the busiest days of the year. For further analysis we would like to gain a better understanding of how the patio's heating costs might be affected by outdoor temperatures.
