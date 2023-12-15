@@ -2,6 +2,7 @@
   {
     "listing": "/posts.html",
     "items": [
+      "/posts/Yum! Sales/yum_sales.html",
       "/posts/Universal Bank Gradient Boosting/universal_bank_GBM.html",
       "/posts/LHBA House Pricing Regression/LHBA House Pricing Regression.html",
       "/posts/Demo Post 2/index.html",
