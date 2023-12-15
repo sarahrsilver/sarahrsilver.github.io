@@ -82,8 +82,8 @@ sales <- sales %>%
 ```{r}
 x<- ggplot(sales)+
   geom_line(aes(x = date, y = net_sales), stat = "identity") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)
-        #, text=element_text(family = "Raleway")
+  theme(axis.text.x = element_text(angle = 45, hjust = 1), 
+        text=element_text(family = "Raleway")
         )
 
 ggplotly(x)
